@@ -22,11 +22,11 @@
 #define k_assert(_expression, _information) \
 	(void) ( _expression || (_k_assert(_information, __FILE__, __LINE__, __func__), 0) )
 
-#define _k_assert(_information, _file, _line, _func) \
-	std::cerr << "assert in "  << _file			\
-			  << ", function " << _func 		\
-			  << ", line "     << _line 		\
-			  << " : " << _information << '\n',	\
+#define _k_assert(_information, _file, _line, _func)	\
+	std::cerr << "assert in "  << _file		\
+		  << ", function " << _func 		\
+		  << ", line "     << _line 		\
+		  << " : " << _information << '\n',	\
 	std::exit(0)
 
 namespace kstl
@@ -51,7 +51,7 @@ class Klist
 		};
 
 		// 基础变量:
-		unsigned int cnt;	// 记录链表当前结点个数
+		unsigned int cnt;		// 记录链表当前结点个数
 		Node *head;			// 链表头指针
 		Node *tail;			// 链表尾指针
 
@@ -249,7 +249,7 @@ class Klist
 		// 反转整个链表
 		void reverse()
 		{
-			if (cnt)	// 链表不空，才可反转
+			if (cnt)// 链表不空，才可反转
 			{
 				// 把每一个结点的 prev 和 next 指针交换
 				for (Node *now=head; now!=tail; now=now->prev)
@@ -301,7 +301,7 @@ class Klist
 				head = head->next;
 				delete_node(oldHead);
 			}
-			else				// 空链表不能 pop 
+			else			// 空链表不能 pop 
 			{
 				k_assert(0, "KList empty(pop)");
 			}
@@ -319,7 +319,7 @@ class Klist
 				tail = tail->prev;
 				delete_node(oldTail);
 			}
-			else				// 空链表不能 pop 
+			else			// 空链表不能 pop 
 			{
 				k_assert(0, "KList empty(pop)");
 			}
@@ -327,7 +327,7 @@ class Klist
 
 		void insert(const unsigned int pos, const Type &data)
 		{
-			if ( 0 == pos )				// 插入在链表头
+			if ( 0 == pos )			// 插入在链表头
 			{
 				push_front(data);
 			}
@@ -342,9 +342,9 @@ class Klist
 			}
 			else if ( pos == cnt )
 			{
-				push_back(data);		// 插入在链表尾
+				push_back(data);	// 插入在链表尾
 			}
-			else						// 越界 
+			else				// 插入越界 
 			{
 				k_assert(0, "KList out of range(insert)");
 			}
@@ -352,9 +352,9 @@ class Klist
 
 		const Type &at(const unsigned int pos)
 		{
-			if (cnt)					// 链表不空，才可取值
+			if (cnt)			// 链表不空，才可取值
 			{
-				if ( 0 == pos )			// 取得链表头的数据
+				if ( 0 == pos )		// 取得链表头的数据
 				{
 					return head->data;
 				}
@@ -369,14 +369,14 @@ class Klist
 				}
 				else if ( pos == cnt )
 				{
-					return tail->data;	// 取得链表尾的数据
+					return tail->data;// 取得链表尾的数据
 				}
-				else					// 越界 
+				else			// 越界 
 				{
 					k_assert(0, "KList out of range(at)");
 				}
 			}
-			else						// 空链表不可以取值 
+			else				// 空链表不可以取值 
 			{
 				k_assert(0, "KList empty(at)");
 			}
