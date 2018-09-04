@@ -10,7 +10,7 @@
 	  -2 没有实现迭代器
 
 	0.0.2 更新日志:		2018/09/05  01:13
-	  -0 对于部分可能出错的函数新增加了断言（宏 + std::cerr + std::exit(0) 实现） 
+	  -0 对于部分可能出错的函数新增加了断言（宏 + std::cerr + std::exit(0) 实现）
 */
 
 #ifndef INC_KLIST
@@ -24,10 +24,10 @@
 
 #define _k_assert(_information, _file, _line, _func)	\
 	std::cerr << "assert in "  << _file		\
-		  << ", function " << _func 		\
-		  << ", line "     << _line 		\
-		  << " : " << _information << '\n',	\
-	std::exit(0)
+	          << ", function " << _func 		\
+	          << ", line "     << _line 		\
+	          << " : " << _information << '\n',	\
+	          std::exit(0)
 
 namespace kstl
 {
@@ -73,7 +73,7 @@ class Klist
 			cnt = 1;
 		}
 
-		// 删除单节点链表的唯一结点
+		// 删除单结点链表的唯一结点
 		inline void pop_last(void)
 		{
 			delete head;
@@ -139,26 +139,14 @@ class Klist
 
 		const Type &front(void)
 		{
-			if (cnt)	// 链表不空，才可获取
-			{
-				return head->data;
-			}
-			else		// 空链表不能获取
-			{
-				k_assert(0, "KList empty(front)");
-			}
+			k_assert(cnt > 0, "Klist empty(front)");	// 空链表不能获取
+			return head->data;
 		}
 
 		const Type &back(void)
 		{
-			if (cnt)	// 链表不空，才可获取
-			{
-				return tail->data;
-			}
-			else		// 空链表不能获取
-			{
-				k_assert(0, "KList empty(back)");
-			}
+			k_assert(cnt > 0, "Klist empty(back)");		// 空链表不能获取
+			return tail->data;
 		}
 
 		void clear(void)
@@ -177,7 +165,7 @@ class Klist
 		// 顺序打印链表（结点数据需要支持 std::cout）
 		void print(void)
 		{
-			if (cnt)	// 链表不空，才可打印
+			if (cnt)	// 链表不空，才需打印
 			{
 				for (Node *p=head; p!=tail; p=p->next)
 				{
@@ -190,7 +178,7 @@ class Klist
 		// 逆序打印链表（结点数据需要支持 std::cout）
 		void rprint(void)
 		{
-			if (cnt)	// 链表不空，才可打印
+			if (cnt)	// 链表不空，才需打印
 			{
 				for (Node *p=tail; p!=head; p=p->prev)
 				{
@@ -204,7 +192,7 @@ class Klist
 		int find(const Type &object)
 		{
 			int pos = -1;
-			if (cnt)	// 链表不空，才可查找
+			if (cnt)	// 链表不空，才需查找
 			{
 				unsigned int nowPos = 0;
 				for (Node *p=head; p!=tail; p=p->next, ++nowPos)
@@ -227,7 +215,7 @@ class Klist
 		int rfind(const Type &object)
 		{
 			int pos = -1;
-			if (cnt)	// 链表不空，才可查找
+			if (cnt)	// 链表不空，才需查找
 			{
 				unsigned int nowPos = cnt-1;
 				for (Node *p=tail; p!=head; p=p->prev, --nowPos)
@@ -249,7 +237,7 @@ class Klist
 		// 反转整个链表
 		void reverse()
 		{
-			if (cnt)// 链表不空，才可反转
+			if (cnt)	// 链表不空，才需反转
 			{
 				// 把每一个结点的 prev 和 next 指针交换
 				for (Node *now=head; now!=tail; now=now->prev)
@@ -291,42 +279,40 @@ class Klist
 
 		void pop_front(void)
 		{
-			if ( 1 == cnt )		// 链表只有一个元素
+			k_assert(cnt > 0, "Klist empty(pop)");	// 空链表不能 pop
+
+			if ( 1 == cnt )			// 链表只有一个结点，删除它
 			{
 				pop_last();
 			}
-			else if ( 1 < cnt )	// 链表不只有一个结点，正常删除头结点
+			else				// 链表不只有一个结点，正常删除头结点
 			{
 				Node *oldHead = head;
 				head = head->next;
 				delete_node(oldHead);
 			}
-			else			// 空链表不能 pop 
-			{
-				k_assert(0, "KList empty(pop)");
-			}
 		}
 
 		void pop_back(void)
 		{
-			if ( 1 == cnt )		// 链表只有一个元素
+			k_assert(cnt > 0, "Klist empty(pop)");	// 空链表不能 pop
+
+			if ( 1 == cnt )			// 链表只有一个结点，删除它
 			{
 				pop_last();
 			}
-			else if ( 1 < cnt )	// 链表不只有一个结点，正常删除尾结点
+			else				// 链表不只有一个结点，正常删除尾结点
 			{
 				Node *oldTail = tail;
 				tail = tail->prev;
 				delete_node(oldTail);
 			}
-			else			// 空链表不能 pop 
-			{
-				k_assert(0, "KList empty(pop)");
-			}
 		}
 
 		void insert(const unsigned int pos, const Type &data)
 		{
+			k_assert(cnt >= pos, "Klist out of range(insert)");	// 越界，不可插入
+
 			if ( 0 == pos )			// 插入在链表头
 			{
 				push_front(data);
@@ -340,45 +326,33 @@ class Klist
 				}
 				insert_prev(now, data);	// 因为新结点要取代 now 所指的结点的位置，所以新结点要插入在 now 结点之前
 			}
-			else if ( pos == cnt )
+			else				// 插入在链表尾
 			{
-				push_back(data);	// 插入在链表尾
-			}
-			else				// 插入越界 
-			{
-				k_assert(0, "KList out of range(insert)");
+				push_back(data);
 			}
 		}
 
 		const Type &at(const unsigned int pos)
 		{
-			if (cnt)			// 链表不空，才可取值
+			k_assert(cnt > 0, "Klist empty(at)");		// 空链表不可取值
+			k_assert(cnt >= pos, "Klist out of range(at)");	// 越界，不可取值
+
+			if ( 0 == pos )					// 取得链表头的数据
 			{
-				if ( 0 == pos )		// 取得链表头的数据
-				{
-					return head->data;
-				}
-				else if ( pos < cnt )	// 取得链表中某个位置的数据
-				{
-					Node *now = head;
-					for (unsigned int nowPos = 0; pos!=nowPos; ++nowPos)
-					{
-						now=now->next;
-					}
-					return now->data;
-				}
-				else if ( pos == cnt )
-				{
-					return tail->data;// 取得链表尾的数据
-				}
-				else			// 越界 
-				{
-					k_assert(0, "KList out of range(at)");
-				}
+				return head->data;
 			}
-			else				// 空链表不可以取值 
+			else if ( pos < cnt )				// 取得链表中某个位置的数据
 			{
-				k_assert(0, "KList empty(at)");
+				Node *now = head;
+				for (unsigned int nowPos = 0; pos!=nowPos; ++nowPos)
+				{
+					now=now->next;
+				}
+				return now->data;
+			}
+			else						// 取得链表尾的数据
+			{
+				return tail->data;
 			}
 		}
 };
