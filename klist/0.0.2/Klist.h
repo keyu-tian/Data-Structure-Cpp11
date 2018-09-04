@@ -91,7 +91,7 @@ class Klist
 			--cnt;
 		}
 
-		// 向指针指向结点之前插入节点
+		// 向指针指向结点之前插入结点
 		inline void insert_prev(Node *pNode, const Type &data)
 		{
 			Node *pNewNode = new Node(pNode->prev, pNode, data);
@@ -100,7 +100,7 @@ class Klist
 			cnt++;
 		}
 
-		// 向指针指向结点之后插入节点
+		// 向指针指向结点之后插入结点
 		inline void insert_next(Node *pNode, const Type &data)
 		{
 			Node *pNewNode = new Node(pNode, pNode->next, data);
@@ -338,7 +338,7 @@ class Klist
 				{
 					now=now->next;
 				}
-				insert_prev(now, data);	// 因为新结点要取代 now 所指的结点的位置，所以新节点要插入在 now 结点之前
+				insert_prev(now, data);	// 因为新结点要取代 now 所指的结点的位置，所以新结点要插入在 now 结点之前
 			}
 			else if ( pos == cnt )
 			{
