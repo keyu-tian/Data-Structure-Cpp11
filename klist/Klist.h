@@ -1,12 +1,20 @@
 /*
 	名称: 双向循环链表模板类
 	作者: Kevin
-	日期: 04/09/17 22:45
-	版本: 0.0.0
-	更新描述:
-		-0 链表的首版本
-		-1 实现了链表的基本插入、删除、清除操作
-		-2 没有实现迭代器
+	创建日期: 04/09/04 22:45
+	当前最高版本: 0.0.0
+
+	0.0 概况:
+	  -0 链表的首版本
+	  -1 实现链表的基本操作
+	  -2 没有实现迭代器
+
+	0.0.0 更新:		2018/09/04  23:07
+		-0 新增加了链表的构造、析构函数
+		-1 新增加了链表的判断空和获取结点个数函数
+		-2 新增加了链表的获取头尾数据函数
+		-3 新增加了链表的清空、顺序打印、逆序打印函数
+		-4 新增加了链表的头尾增删操作函数 
 */
 
 #ifndef INC_KLIST
@@ -23,26 +31,26 @@ class Klist
 	private:
 
 		// 内部类：链表的结点
-		class Node
+		struct Node
 		{
-			friend class Klist;
-			private:
-				Type data;
-				Node *prev;
-				Node *next;
+			Type data;
+			Node *prev;
+			Node *next;
 
-				Node(void) { }
-				Node(Type data) : data(data) { }
-				Node(Node *prev, Node *next, Type data) :
-					prev(prev), next(next), data(data) { }
+			Node(void) { }
+			Node(Type data) : data(data) { }
+			Node(Node *prev, Node *next, Type data) :
+				prev(prev), next(next), data(data) { }
 		};
 
-		// 基础变量
+		// 基础变量:
 		unsigned int cnt;	// 记录链表当前结点个数
 		Node *head;			// 链表头指针
 		Node *tail;			// 链表尾指针
 
-		// 私有的操作函数：插入第一个结点、删除最后一个结点、删除某结点、在某结点之前或之后插入新节点
+	private:
+
+		// 向空链表中插入第一个结点
 		inline void push_first(Type first_data)
 		{
 			Node *pNewNode = new Node(first_data);
@@ -51,6 +59,7 @@ class Klist
 			cnt = 1;
 		}
 
+		// 删除单节点链表的唯一结点
 		inline void pop_last(void)
 		{
 			delete head;
@@ -58,6 +67,7 @@ class Klist
 			cnt = 0;
 		}
 
+		// 删除指针指向的结点
 		inline void delete_node(Node *pNode)
 		{
 			pNode->prev->next = pNode->next;
@@ -67,6 +77,7 @@ class Klist
 			--cnt;
 		}
 
+		// 向指针指向结点之前插入节点
 		inline void insert_prev(Node *pNode, Type data)
 		{
 			Node *pNewNode = new Node(pNode->prev, pNode, data);
@@ -75,6 +86,7 @@ class Klist
 			cnt++;
 		}
 
+		// 向指针指向结点之后插入节点
 		inline void insert_next(Node *pNode, Type data)
 		{
 			Node *pNewNode = new Node(pNode, pNode->next, data);
@@ -83,16 +95,14 @@ class Klist
 			cnt++;
 		}
 
-
 	public:
 
-		// 构造析构函数
 		Klist(void) : cnt(0), head(nullptr), tail(nullptr) { }
 
 		Klist(Type *array, unsigned int len)
 		{
-			push_first(array[0]);		// 用第一个数据初始化链表
-			for(int i=1; i<len; i++)	// 按序插入剩下的数据
+			push_first(array[0]);		// 向空链表内插入第一个结点
+			for(int i=1; i<len; i++)	// 按序插入剩下的结点
 			{
 				push_back(array[i]);
 			}
@@ -103,10 +113,9 @@ class Klist
 			clear();
 		}
 
-		// 功能函数：结点的插入、链表的判断空、返回个数、获取头尾数据、打印（需支持std::cout）清除
 		bool empty(void)
 		{
-			return cnt == 0;
+			return 0 == cnt;
 		}
 
 		unsigned int size(void)
@@ -143,6 +152,7 @@ class Klist
 			}
 		}
 
+		// 整个打印链表（结点数据需要支持 std::cout）
 		void print(void)
 		{
 			if (cnt)	// 链表不空，才可打印
@@ -155,6 +165,7 @@ class Klist
 			}
 		}
 
+		// 逆序打印整个链表（结点数据需要支持 std::cout）
 		void rprint(void)
 		{
 			if (cnt)	// 链表不空，才可打印
@@ -167,7 +178,6 @@ class Klist
 			}
 		}
 
-		// 两端增删函数：头尾插入、头尾删除
 		void push_front(const Type &data)
 		{
 			if (cnt)	// 链表不空，正常头插
@@ -196,11 +206,11 @@ class Klist
 
 		void pop_front(void)
 		{
-			if ( 1==cnt )	// 链表只有一个元素
+			if ( 1==cnt )		// 链表只有一个元素
 			{
 				pop_last();
 			}
-			else if (1<cnt)	// 链表不只有一个结点，正常删除头结点
+			else if ( 1<cnt )	// 链表不只有一个结点，正常删除头结点
 			{
 				Node *oldHead = head;
 				head = head->next;
@@ -210,11 +220,11 @@ class Klist
 
 		void pop_back(void)
 		{
-			if ( 1==cnt )	// 链表只有一个元素
+			if ( 1==cnt )		// 链表只有一个元素
 			{
 				pop_last();
 			}
-			else if (1<cnt)	// 链表不只有一个结点，正常删除尾结点
+			else if ( 1<cnt )	// 链表不只有一个结点，正常删除尾结点
 			{
 				Node *oldTail = tail;
 				tail = tail->prev;
