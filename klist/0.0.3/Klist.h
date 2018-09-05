@@ -12,9 +12,9 @@
 	0.0.3 更新日志:		2018/09/05  19:47
 	  -0 重构了代码，将之前的部分 for 循环修改为 do-while
 	  -1 重构了代码，将之前一些基于 pos 的函数进行了效率优化（如果 pos 在后半部分则从尾部开始往前遍历）
-      -2 新增加了链表的构造函数（指定数目和数据）
+	  -2 新增加了链表的构造函数（指定数目和数据）
 	  -3 新增加了链表的插入操作（指定位置）
-      -4 新增加了链表的删除操作（指定单个位置、指定区域）
+	  -4 新增加了链表的删除操作（指定单个位置、指定区域）
 */
 
 #ifndef INC_KLIST
@@ -26,12 +26,12 @@
 #define k_assert(_expression, _information) \
 	(void) ( (_expression) || (_k_assert(_information, __FILE__, __LINE__, __func__), 0) )
 
-#define _k_assert(_information, _file, _line, _func) \
-	std::cerr << "error in "  << _file			\
+#define _k_assert(_information, _file, _line, _func)	\
+	std::cerr << "error in "  << _file		\
 	          << ", function " << _func 		\
 	          << ", line "     << _line 		\
 	          << " : " << _information << '\n',	\
-	          std::exit(0)
+	std::exit(0)
 
 namespace kstl
 {
@@ -55,7 +55,7 @@ class Klist
 		};
 
 		// 基础变量:
-		unsigned int cnt;	// 记录链表当前结点个数
+		unsigned int cnt;		// 记录链表当前结点个数
 		Node *head;			// 链表头指针
 		Node *tail;			// 链表尾指针
 
@@ -128,7 +128,7 @@ class Klist
 
 		Klist(const unsigned int count, const Type &data)
 		{
-			push_first(data);			// 向空链表内插入第一个结点
+			push_first(data);		// 向空链表内插入第一个结点
 			for (int i=1; i<count; ++i)	// 插入剩下的结点
 			{
 				push_back(data);
@@ -152,13 +152,13 @@ class Klist
 
 		inline const Type &front(void)
 		{
-			k_assert(0 != cnt, "Klist empty(front)");		// 空链表不能获取
+			k_assert(0 != cnt, "Klist empty(front)");	// 空链表不能获取
 			return head->data;
 		}
 
 		inline const Type &back(void)
 		{
-			k_assert(0 != cnt, "Klist empty(back)");		// 空链表不能获取
+			k_assert(0 != cnt, "Klist empty(back)");	// 空链表不能获取
 			return tail->data;
 		}
 
@@ -284,7 +284,7 @@ class Klist
 				insert_prev(head, data);
 				head = head->prev;
 			}
-			else			// 否则向空链表中插入第一个结点
+			else		// 否则向空链表中插入第一个结点
 			{
 				push_first(data);
 			}
@@ -297,7 +297,7 @@ class Klist
 				insert_next(tail, data);
 				tail = tail->next;
 			}
-			else			// 否则向空链表中插入第一个结点
+			else		// 否则向空链表中插入第一个结点
 			{
 				push_first(data);
 			}
@@ -311,7 +311,7 @@ class Klist
 			{
 				pop_last();
 			}
-			else				// 链表不只有一个结点，正常删除头结点
+			else			// 链表不只有一个结点，正常删除头结点
 			{
 				Node *oldHead = head;
 				head = head->next;
@@ -327,7 +327,7 @@ class Klist
 			{
 				pop_last();
 			}
-			else				// 链表不只有一个结点，正常删除尾结点
+			else			// 链表不只有一个结点，正常删除尾结点
 			{
 				Node *oldTail = tail;
 				tail = tail->prev;
@@ -337,7 +337,7 @@ class Klist
 
 		const Type &at(const unsigned int pos)
 		{
-			k_assert( 0 != cnt, "Klist empty(at)");			// 空链表不可取值
+			k_assert( 0 != cnt, "Klist empty(at)");		// 空链表不可取值
 			k_assert(pos < cnt, "Klist out of range(at)");	// 越界，不可取值
 
 			Node *now;
@@ -349,7 +349,7 @@ class Klist
 					now = now->next;
 				}
 			}
-			else				// 目标位置在链表后半部分
+			else			// 目标位置在链表后半部分
 			{
 				now = tail;
 				for (unsigned int nowPos = cnt-1; pos!=nowPos; --nowPos)
@@ -365,7 +365,7 @@ class Klist
 		{
 			k_assert(pos <= cnt, "Klist out of range(insert)");	// 越界，不可插入
 
-			if ( 0 == pos )				// 插入在链表头之前
+			if ( 0 == pos )			// 插入在链表头之前
 			{
 				push_front(data);
 			}
@@ -387,7 +387,7 @@ class Klist
 				}
 				insert_prev(now, data);
 			}
-			else						// 插入在链表尾之后
+			else				// 插入在链表尾之后
 			{
 				push_back(data);
 			}
@@ -395,10 +395,10 @@ class Klist
 
 		void erase(const unsigned int pos)
 		{
-			k_assert( 0 != cnt, "Klist empty(erase)");			// 空链表不可删除
+			k_assert( 0 != cnt, "Klist empty(erase)");		// 空链表不可删除
 			k_assert(pos < cnt, "Klist out of range(erase)");	// 越界，不可删除
 
-			if ( 0 == pos )				// 删除链表头
+			if ( 0 == pos )			// 删除链表头
 			{
 				pop_front();
 			}
@@ -420,7 +420,7 @@ class Klist
 				}
 				delete_node(now);
 			}
-			else						// 删除链表尾
+			else				// 删除链表尾
 			{
 				pop_back();
 			}
@@ -428,8 +428,8 @@ class Klist
 
 		void erase(const unsigned int firstPos, const unsigned int lastPos)	// 闭区间
 		{
-			k_assert(0 != cnt, "Klist empty(erase)");						// 空链表不可删除
-			k_assert(lastPos < cnt, "Klist out of range(erase)");			// 越界，不可删除
+			k_assert(0 != cnt, "Klist empty(erase)");			// 空链表不可删除
+			k_assert(lastPos < cnt, "Klist out of range(erase)");		// 越界，不可删除
 			k_assert(firstPos <= lastPos, "Klist invalid input(erase)");	// 输入不合法，不可删除
 
 			if ( 0 == firstPos && cnt-1 == lastPos)		// 删除整个链表
@@ -489,7 +489,7 @@ class Klist
 				firstPosPrev->next = lastPosNext;
 				lastPosNext->prev  = firstPosPrev;
 			}
-			else										// 删除区域更靠后（不包含链表头尾）
+			else						// 删除区域更靠后（不包含链表头尾）
 			{
 				Node *now = tail, *prev, *firstPosPrev, *lastPosNext;
 				unsigned int nowPos = cnt-1;
@@ -518,3 +518,4 @@ class Klist
 }	// namespace kstl
 
 #endif	// INC_KLIST
+
