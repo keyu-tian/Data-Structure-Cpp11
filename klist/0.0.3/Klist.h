@@ -447,6 +447,7 @@ class Klist
 					now = next;
 				}
 
+				// 更新头尾的指针
 				head = now;
 				head->prev = tail;
 				tail->next = head;
@@ -462,6 +463,7 @@ class Klist
 					now = prev;
 				}
 
+				// 更新头尾的指针
 				tail = now;
 				tail->next = head;
 				head->prev = tail;
@@ -469,6 +471,8 @@ class Klist
 			else if ( firstPos - 0 < cnt-1 - lastPos )	// 删除区域更靠前（不包含链表头尾）
 			{
 				Node *now = head, *next, *firstPosPrev, *lastPosNext;
+				
+				// 跳过结点
 				unsigned int nowPos = 0;
 				while ( nowPos < firstPos )
 				{
@@ -476,6 +480,7 @@ class Klist
 					++nowPos;
 				}
 
+				// 删除区间，并同时记录删除区间的两端（ firstPosPrev 和 lastPosNext ）
 				firstPosPrev = now->prev;
 				for (; nowPos<=lastPos; ++nowPos)
 				{
@@ -486,12 +491,15 @@ class Klist
 				}
 				lastPosNext = now;
 
+				// 把链表断裂的地方重新连起来
 				firstPosPrev->next = lastPosNext;
 				lastPosNext->prev  = firstPosPrev;
 			}
 			else						// 删除区域更靠后（不包含链表头尾）
 			{
 				Node *now = tail, *prev, *firstPosPrev, *lastPosNext;
+				
+				// 跳过结点
 				unsigned int nowPos = cnt-1;
 				while ( nowPos > lastPos )
 				{
@@ -499,6 +507,7 @@ class Klist
 					--nowPos;
 				}
 
+				// 删除区间，并同时记录删除区间的两端（ firstPosPrev 和 lastPosNext ）
 				lastPosNext = now->next;
 				for (; nowPos>=firstPos; --nowPos)
 				{
@@ -509,6 +518,7 @@ class Klist
 				}
 				firstPosPrev = now;
 
+				// 把链表断裂的地方重新连起来
 				firstPosPrev->next = lastPosNext;
 				lastPosNext->prev  = firstPosPrev;
 			}
